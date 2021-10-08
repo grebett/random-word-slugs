@@ -1,6 +1,6 @@
-export type PartsOfSpeech = keyof typeof wordList;
+export type EnglishPartsOfSpeech = keyof typeof wordListEn;
 
-export const wordList = {
+export const wordListEn = {
   noun: [
     { word: "accountant", categories: ["profession"] },
     { word: "actor", categories: ["profession"] },
@@ -563,27 +563,8 @@ export const wordList = {
   ] as const,
 };
 
-export type WordList = typeof wordList;
+export type EnglishWordList = typeof wordListEn;
 
-export type Categories = {
-  [K in keyof WordList]: WordList[K][number]["categories"][number];
+export type EnglishCategories = {
+  [K in keyof EnglishWordList]: EnglishWordList[K][number]["categories"][number];
 };
-
-export function getWordsByCategory<P extends PartsOfSpeech>(
-  partOfSpeech: P,
-  categories: Categories[P][] = []
-) {
-  const selectedCategoried = new Set(categories);
-  const selectedWords: WordList[P][number]["word"][] = [];
-
-  for (let word of wordList[partOfSpeech]) {
-    if (
-      categories.length === 0 ||
-      word.categories.some((cat: any) => selectedCategoried.has(cat))
-    ) {
-      selectedWords.push(word.word);
-    }
-  }
-
-  return selectedWords;
-}

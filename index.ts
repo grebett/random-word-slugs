@@ -1,4 +1,4 @@
-import { getWordsByCategory, PartsOfSpeech, Categories } from "./words";
+import { getWordsByCategory, PartsOfSpeech, LanguageCode, EnglishCategories, FrenchCategories } from "./words";
 
 const DEFAULT_NUMBER_OF_WORDS = 3;
 
@@ -9,42 +9,57 @@ interface FixedLengthArray<T extends any, L extends number> extends Array<T> {
 
 type Case = "kebab" | "camel" | "title" | "lower" | "sentence";
 
-type Options<T, L extends number> = {
+type EnglishOptions<T, L extends number> = {
   partsOfSpeech: FixedLengthArray<T, L>;
   categories: Partial<
     {
-      [K in PartsOfSpeech]: Categories[K][];
+      [K in PartsOfSpeech]: EnglishCategories[K][];
     }
   >;
   format: Case;
 };
 
-export type RandomWordOptions<N extends number> = Partial<
-  Options<PartsOfSpeech, N>
+type FrenchOptions<T, L extends number> = {
+  partsOfSpeech: FixedLengthArray<T, L>;
+  categories: Partial<
+    {
+      [K in PartsOfSpeech]: FrenchCategories[K][];
+    }
+  >;
+  format: Case;
+};
+
+export type EnglishRandomWordOptions<N extends number> = Partial<
+  EnglishOptions<PartsOfSpeech, N>
+>;
+
+export type FrenchRandomWordOptions<N extends number> = Partial<
+  FrenchOptions<PartsOfSpeech, N>
 >;
 
 export function generateSlug<N extends number>(
+  language: LanguageCode,
   numberOfWords?: N,
-  options?: Partial<Options<PartsOfSpeech, N>>
+  options?: Partial<EnglishOptions<PartsOfSpeech, N>> | Partial<FrenchOptions<PartsOfSpeech, N>>,
 ) {
   const numWords = numberOfWords || DEFAULT_NUMBER_OF_WORDS;
-  const defaultOptions: Options<PartsOfSpeech, typeof numWords> = {
+  const defaultOptions: EnglishOptions<PartsOfSpeech, typeof numWords> | FrenchOptions<PartsOfSpeech, typeof numWords> = {
     partsOfSpeech: getDefaultPartsOfSpeech(numWords),
     categories: {},
     format: "kebab",
   };
-  const opts: Options<PartsOfSpeech, typeof numWords> = {
+  const opts = {
     ...defaultOptions,
     ...options,
   };
 
   const words = [];
-
   for (let i = 0; i < numWords; i++) {
     const partOfSpeech = opts.partsOfSpeech[i];
     const candidates = getWordsByCategory(
+      language,
       opts.partsOfSpeech[i],
-      opts.categories[partOfSpeech]
+      opts.categories[partOfSpeech],
     );
     const rand = candidates[Math.floor(Math.random() * candidates.length)];
     words.push(rand);
@@ -96,14 +111,16 @@ function formatter(arr: string[], format: Case) {
 }
 
 export function totalUniqueSlugs<N extends number>(
+  language: LanguageCode,
   numberOfWords?: N,
-  options?: RandomWordOptions<N>
+  options?: EnglishRandomWordOptions<N> | FrenchRandomWordOptions<N>
 ) {
   const numAdjectives = getWordsByCategory(
+    language,
     "adjective",
     options?.categories?.adjective
   ).length;
-  const numNouns = getWordsByCategory("noun", options?.categories?.noun).length;
+  const numNouns = getWordsByCategory(language, "noun", options?.categories?.noun).length;
   const nums = {
     adjective: numAdjectives,
     noun: numNouns,
