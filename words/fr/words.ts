@@ -229,7 +229,7 @@ export const wordListFr = {
     { word: "ours", categories: ["animaux"], genre: "M" },
     { word: "oxygene", categories: ["science"], genre: "M" },
     { word: "pager", categories: ["choses", "technologie"], genre: "M" },
-    { word: "Paques", categories: ["religion"], genre: "F" },
+    { word: "paques", categories: ["religion"], genre: "F" },
     { word: "parapluie", categories: ["objet"], genre: "M" },
     { word: "parc", categories: ["lieu"], genre: "M" },
     { word: "pays", categories: ["lieu"], genre: "M" },
