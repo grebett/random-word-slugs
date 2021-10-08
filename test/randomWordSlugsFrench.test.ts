@@ -2,9 +2,9 @@ import { generateSlug, FrenchRandomWordOptions, totalUniqueSlugs } from "../inde
 import { FrenchCategories, PartsOfSpeech } from "../words";
 import { wordListFr } from '../words/fr/words';
 
-const allAdjectives = wordListFr.adjective.map(({ word }) => word) as string[];
+const allAdjectives = [...wordListFr.adjective.map(({ word }) => word) as string[], ...wordListFr.adjective.map(({ feminized }) => feminized) as string[]];
 const allNouns = wordListFr.noun.map(({ word }) => word) as string[];
-const numAdjectives = allAdjectives.length;
+const numAdjectives = allAdjectives.length / 2;
 const numNouns = allNouns.length;
 
 function checkWordInCategories<P extends PartsOfSpeech>(
@@ -15,7 +15,7 @@ function checkWordInCategories<P extends PartsOfSpeech>(
   const cats = new Set(categories);
   const wordCategories = (() => {
     for (let w of wordListFr[partOfSpeech]) {
-      if (w.word === word) {
+      if (w.word === word || 'feminized' in w && w.feminized === word) {
         return w.categories;
       }
     }

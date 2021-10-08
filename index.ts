@@ -53,7 +53,7 @@ export function generateSlug<N extends number>(
     ...options,
   };
 
-  const words = [];
+  let words = [];
   for (let i = 0; i < numWords; i++) {
     const partOfSpeech = opts.partsOfSpeech[i];
     const candidates = getWordsByCategory(
@@ -61,11 +61,23 @@ export function generateSlug<N extends number>(
       opts.partsOfSpeech[i],
       opts.categories[partOfSpeech],
     );
-    const rand = candidates[Math.floor(Math.random() * candidates.length)];
+    const rand = {
+      ...candidates[Math.floor(Math.random() * candidates.length)],
+      partOfSpeech,
+    };
+    
     words.push(rand);
   }
 
-  return formatter(words, opts.format);
+  let genre = words.reduce((genre, word) => {
+    if (word.genre) {
+      return word.genre;
+    }
+    return genre;
+  }, "N");
+
+  const feminizedWords = words.map((word) => genre === "F" && word.partOfSpeech === "adjective" ? word.feminized as string : word.word);
+  return formatter(feminizedWords, opts.format);
 }
 
 function getDefaultPartsOfSpeech<N extends number>(length: N) {
