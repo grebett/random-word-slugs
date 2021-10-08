@@ -1,6 +1,6 @@
 {
   "name": "random-word-slugs",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "A random word slug generator pre-loaded with many words",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,10 @@
     "slug",
     "slug generator",
     "javascript",
-    "typescript"
+    "typescript",
+    "multilanguage",
+    "english",
+    "french"
   ],
   "author": "Nick Scialli",
   "license": "MIT",
